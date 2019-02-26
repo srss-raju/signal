@@ -55,6 +55,7 @@ public class AssessmentPlan  implements Serializable {
 	@Transient
 	private Long cohortPercentage;
 
+	@JsonIgnore
 	private Date createdDate;
 	private String createdBy;
 	private String modifiedBy;
