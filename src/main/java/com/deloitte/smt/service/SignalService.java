@@ -263,12 +263,13 @@ public class SignalService {
 
 		Topic topicUpdated = topicRepository.save(topic);
 		ProductConfiguration productConfiguration = productConfigurationRepository.findByProductKey(topicUpdated.getProductKey());
+		if(productConfiguration!=null) {
 		if(productConfiguration.isAssessmentFlag()){
 			AssessmentPlan plan = null;
 			List<Topic> topics = topicRepository.findByProductKey(topicUpdated.getProductKey());
 			if(!CollectionUtils.isEmpty(topics)){
 				for(Topic signal:topics){
-					if(signal.getAssessmentPlan() != null){
+					if(signal.getAssessmentPlan() != null && signal.getAssessmentPlan().getAssessmentPlanStatus().equalsIgnoreCase(SmtConstant.IN_PROGRESS.getDescription())){
 						plan = signal.getAssessmentPlan();
 					}
 				}
@@ -279,6 +280,7 @@ public class SignalService {
 			}
 			
 		}
+	}
 		if(topic.getRunInstanceId() == null){
 			List<TopicProductAssignmentConfiguration> productsOfIngredients = productHierarchyService.findActLevelsByIngredient(getIngredientNames(topic));
 			if(!CollectionUtils.isEmpty(productsOfIngredients)){
