@@ -26,6 +26,7 @@ import com.deloitte.smt.entity.Attachment;
 import com.deloitte.smt.entity.Comments;
 import com.deloitte.smt.entity.Ingredient;
 import com.deloitte.smt.entity.NonSignal;
+import com.deloitte.smt.entity.Product;
 import com.deloitte.smt.entity.ProductAssignmentConfiguration;
 import com.deloitte.smt.entity.ProductConfiguration;
 import com.deloitte.smt.entity.RiskPlan;
@@ -237,6 +238,15 @@ public class SignalService {
 		if (null == topic.getSignalValidation()) {
 			topic.setSignalValidation(SmtConstant.IN_PROGRESS.getDescription());
 		}
+		if (!CollectionUtils.isEmpty(topic.getIngredients())) {
+			for (Ingredient ing : topic.getIngredients()) {
+				if (!CollectionUtils.isEmpty(ing.getProducts())) {
+					for (Product p : ing.getProducts()) {
+						topic.setProductKey(p.getProductKey());
+					}
+				}
+			}
+		}
 		if(topic.getRunInstanceId() != null){
 			topic.setProducts(productHierarchyAdditionalService.getProducts(topic));
 			topic.setConditions(socHierarchyAdditionalService.getConditions(topic));
@@ -275,6 +285,7 @@ public class SignalService {
 				}
 				if(plan != null){
 					topicUpdated.setAssessmentPlan(plan);
+					topicUpdated.setSignalStatus(SmtConstant.COMPLETED.getDescription());
 					topicRepository.save(topicUpdated);
 				}
 			}
